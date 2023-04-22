@@ -1,0 +1,52 @@
+/*
+Exploring the Disney+ Dataset (reference link at the end)
+Skills used: aggregate functions, window functions, CTE's, having
+*/
+
+SELECT titles, genres, type, imdb_score,
+AVG(imdb_score)
+OVER(PARTITION BY genres) AS genre_average
+FROM "disneyplus_titles"
+ORDER BY genres;
+
+SELECT title, genres, type, imdb_score, 
+AVG(imdb_score) OVER() AS tot_average,
+AVG(imdb_score) OVER(PARTITION BY genres) AS genre_average,
+MIN(imdb_score) OVER(PARTITION BY genres) AS genre_min, 
+MAX(imdb_score) OVER(PARTITION BY genres) AS genre_max
+FROM "disneyplus_titles"
+ORDER BY genres; 
+
+WITH disney_plus_stats AS
+(
+SELECT titles, genres, type, imdb_score, 
+AVG(imdb_score) OVER() AS tot_average,
+AVG(imdb_score) OVER(PARTITION BY genres) AS genre_average,
+MIN(imdb_score) OVER(PARTITION BY genres) AS genre_min, 
+MAX(imdb_score) OVER(PARTITION BY genres) AS genre_max
+FROM "disneyplus_titles"
+ORDER BY genres; 
+)
+SELECT title, genre_average
+FROM disney_plus_stats
+WHERE  genre_average > tot_average
+ORDER BY genre_average DESC; 
+
+SELECT title, type, AVG(runtime)
+FROM disneyplus_titles
+WHERE type = 'SHOW'
+GROUP BY title, type
+HAVING AVG(runtime) > 45
+ORDER BY AVG(runtime) DESC;
+
+SELECT genres, title, TRUNC(AVG(dn.count_characters))
+FROM
+    (SELECT genres, title, COUNT(character) AS count_characters
+    FROM "disneycredits"
+    LEFT JOIN "disneyplus_titles"
+    ON disneycredits.id = disneyplus_titles.id
+    GROUP BY genres, title, character) as dn
+GROUP BY genres, title, dn.count_characters
+ORDER BY dn.count_characters DESC;
+
+link: https://www.kaggle.com/datasets/victorsoeiro/disney-tv-shows-and-movies 
