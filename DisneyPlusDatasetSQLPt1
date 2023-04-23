@@ -1,6 +1,6 @@
 /*
 Exploring the Disney+ Dataset (reference link at the end)
-Skills used: aggregate functions, window functions, CTE's, having
+Skills used: aggregate functions, window functions, CTE's, HAVING
 */
 
 SELECT titles, genres, type, imdb_score,
