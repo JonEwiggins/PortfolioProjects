@@ -2,7 +2,7 @@
 Skills used: LEFT JOIN, Window Functions (ROW_NUMBER(), LEAD()), CTE, Subqueries
 */
 
-**Make a table with the title and each actor as a column (up to 5 columns, e.g., 'actor1', 'actor2', etc.).**
+Make a table with the title and each actor as a column (up to 5 columns, e.g., 'actor1', 'actor2', etc.).
 
 WITH disney_casts AS (
     SELECT b.id title_id, b.title, a.person_id, a.name, a.character,
@@ -23,7 +23,7 @@ LEFT JOIN disney_casts d ON a.id = d.title_id AND d.cast_list = 3
 LEFT JOIN disney_casts e ON a.id = e.title_id AND e.cast_list = 4
 LEFT JOIN disney_casts f ON a.id = f.title_id AND f.cast_list = 5;
 
-**Find the top five actors who did at least two titles with the longest gaps between titles (e.g. 20 years between titles).**
+Find the top five actors who did at least two titles with the longest gaps between titles (e.g. 20 years between titles).
 
 WITH disney_actors_cte AS (
     SELECT DISTINCT a.name, a.person_id, CAST(SUBSTRING(a.id, 3) AS decimal) title_id_numeric, a.id, b.title, b.release_year
