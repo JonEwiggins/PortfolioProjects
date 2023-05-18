@@ -1,6 +1,6 @@
 /*
 Exploring the Disney+ Dataset (reference link at the end)
-Skills used: aggregate functions, window functions, CTE's, HAVING
+Skills used: aggregate functions, window functions, CTE's, HAVING, CASE/WHEN
 */
 
 SELECT titles, genres, type, imdb_score,
@@ -48,5 +48,15 @@ FROM
     GROUP BY genres, title, character) as dn
 GROUP BY genres, title, dn.count_characters
 ORDER BY dn.count_characters DESC;
+
+SELECT title, genres, imdb_score, release_year,
+CASE
+WHEN imdb_score >= 8.0 THEN 'Strong Performance'
+WHEN imdb_score >= 4.0 THEN 'Mixed Performance'
+ELSE 'Unacclaimed'
+END AS response
+FROM disneyplus_titles
+WHERE imdb_score IS NOT Null AND release_year >= 2008
+ORDER BY 3 DESC;
 
 link: https://www.kaggle.com/datasets/victorsoeiro/disney-tv-shows-and-movies 
