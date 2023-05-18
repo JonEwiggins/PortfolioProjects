@@ -1,0 +1,47 @@
+/* More advanced exploration of Disney+ Dataset (link at bottom)
+Skills used: LEFT JOIN, Window Functions (ROW_NUMBER(), LEAD()), CTE, Subqueries
+*/
+
+**Make a table with the title and each actor as a column (up to 5 columns, e.g., 'actor1', 'actor2', etc.).**
+
+WITH disney_casts AS (
+    SELECT b.id title_id, b.title, a.person_id, a.name, a.character,
+    ROW_NUMBER() OVER(PARTITION BY b.title ORDER BY a.person_id ) cast_list
+    FROM disneycredits a
+    JOIN disneyplus_titles b  ON a.id = b.id
+    ORDER BY 1, 3
+)
+SELECT a.id title_id, a.title, b.name actor_1, 
+        c.name actor_2, 
+        d.name actor_3, 
+        e.name actor_4, 
+        f.name actor_5
+FROM disneyplus_titles a
+LEFT JOIN disney_casts b ON a.id = b.title_id AND b.cast_list = 1
+LEFT JOIN disney_casts c ON a.id = c.title_id AND c.cast_list = 2
+LEFT JOIN disney_casts d ON a.id = d.title_id AND d.cast_list = 3
+LEFT JOIN disney_casts e ON a.id = e.title_id AND e.cast_list = 4
+LEFT JOIN disney_casts f ON a.id = f.title_id AND f.cast_list = 5;
+
+**Find the top five actors who did at least two titles with the longest gaps between titles (e.g. 20 years between titles).**
+
+WITH disney_actors_cte AS (
+    SELECT DISTINCT a.name, a.person_id, CAST(SUBSTRING(a.id, 3) AS decimal) title_id_numeric, a.id, b.title, b.release_year
+    FROM credits AS a
+    INNER JOIN titles AS b ON a.id = b.id
+)
+SELECT DISTINCT dp_gap.name AS credit_name, MAX(dp_gap.gap) AS gap
+FROM
+(SELECT person_id, name, id, title, release_year, 
+    LEAD(release_year) OVER (PARTITION BY person_id ORDER BY title_id_numeric) AS next_release_year,
+    LEAD(id) OVER (PARTITION BY person_id ORDER BY title_id_numeric) AS next_title_id,
+    LEAD(id) OVER (PARTITION BY person_id ORDER BY title_id_numeric) AS next_title,
+    LEAD(release_year) OVER (PARTITION BY person_id ORDER BY title_id_numeric) - release_year AS gap
+FROM disney_actors_cte) dp_gap
+WHERE dp_gap.gap IS NOT Null
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 5;
+
+
+link: https://www.kaggle.com/datasets/victorsoeiro/disney-tv-shows-and-movies 
