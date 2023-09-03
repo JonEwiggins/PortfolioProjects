@@ -1,5 +1,5 @@
 # PortfolioProjects
-## This is where I collect my projects for presentation to the wider world. 
+## This is where I collect my projects
 
 The two Disney+ SQL pieces are exploratory analyses of the roster of the platform's offerings (cerca 2018). I used the available metrics to see how certain genres performed in comparison to others, along with how individual pieces within each genre stacked up against other works of the same genre. In some cases this was made difficult as certain films or shows were assigned multiple genre values within the "genres" column and, as such, there was often only one example that mateched all of the listed genres (i.e., itself). Interestingly, in exploring this dataset, I found many titles that I had not seen in my own account, which probably reflects the different market availabilities. A good VPN service would be needed to further explore this. 
 
